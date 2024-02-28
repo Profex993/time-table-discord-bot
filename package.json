@@ -1,0 +1,19 @@
+{
+  "name": "timetable",
+  "version": "0.0.0",
+  "description": "discord bot for school timetable",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "discord.js": "^14.12.1",
+    "dotenv": "^16.4.5",
+    "xlsx": "^0.18.5"
+  },
+  "devDependencies": {
+    "sppull": "^3.0.1"
+  }
+}
