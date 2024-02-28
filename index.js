@@ -12,7 +12,7 @@ var xlsxData;
 var dataSize;
 var searchedClasses = ["c2c", "c2b", "c4c"];
 
-client.login("MTA3OTA1MTYwOTEzNDM0MjE2NA.GGQ0pU.lh3kTwoe-U0BGFxhp8aK1tKlolJZGdcZuFalAI");
+client.login(process.env.DISCORDTOKEN);
 
 client.on(Events.ClientReady, client => {
     client.channels.cache.get("1209202117529702400");
