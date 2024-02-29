@@ -10,15 +10,19 @@ var wb;
 var ws;
 var xlsxData;
 var dataSize;
-var searchedClasses = ["c2c", "c2b", "c4c"];
+var searchedClasses = process.env.CLASSARRAY.split(";");
+var classMap = new Map();
 
 client.login(process.env.DISCORDTOKEN);
 
 client.on(Events.ClientReady, client => {
-    client.channels.cache.get("1209202117529702400");
+    let channelIDs = process.env.CHATID.split(";");
+    for (let i = 0; i < searchedClasses.length; i++) {
+        classMap.set(searchedClasses[i], client.channels.cache.get(channelIDs[i]));
+    }
 
-    download();
-    //processXLSX();
+    //download();
+    processXLSX();
 });
 
 function download() {
@@ -38,8 +42,9 @@ function download() {
     };
 
     SPPull.download(context, options).then(function () {
-        fs.rename("./data/" + process.env.SITEORIGINALFILENAME, "./data/data.xlsx", () => {});
-        processXLSX();
+        fs.rename("./data/" + process.env.SITEORIGINALFILENAME, "./data/data.xlsx", () => {
+            processXLSX();
+        });
     }).catch(function (err) {
         console.log(err);
     });
@@ -50,7 +55,8 @@ function processXLSX() {
 
     wb = xlsx.readFile("./data/data.xlsx");
 
-    let dateFormat = (date.getDate() + 1) + "" + (date.getMonth() + 1) + "" + date.getFullYear();
+    //let dateFormat = (date.getDate() + 1) + "" + (date.getMonth() + 1) + "" + date.getFullYear();
+    let dateFormat = 132024;
     for (let i = wb.SheetNames.length - 1; i > 0; i--) {
         if (wb.SheetNames[i].replace(/[^0-9]/g, '') == dateFormat) {
             ws = wb.Sheets[wb.SheetNames[i]];
@@ -65,10 +71,17 @@ function processXLSX() {
     for (let i = 0; i < dataSize; i++) {
         for (let j = 0; j < searchedClasses.length; j++) {
             if (xlsxData[i].class != undefined) {
-                if (JSON.stringify(xlsxData[i].class).toLocaleLowerCase().match(searchedClasses[j])) {
-                    console.log(i);
+                let currentClass = searchedClasses[j];
+                if (JSON.stringify(xlsxData[i].class).toLocaleLowerCase().match(currentClass)) {
                     console.log(searchedClasses[j]);
-                    console.log(JSON.stringify(xlsxData[i]));
+
+                    let out = "";
+                    for (let j = 1; j < 10; j++) {
+                        if (xlsxData[i]['h' + j] !== undefined) {
+                            out += xlsxData[i]['h' + j] + "\n\n";
+                        }
+                    }
+                    console.log(out);
                 }
             }
         }
