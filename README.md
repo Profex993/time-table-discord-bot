@@ -10,8 +10,8 @@ SITEPASSWORD="Microsoft password" <br>
 SITEROOTFOLDER="internal directory of the file in Microsoft SharePoint" <br>
 SITEORIGINALFILENAME="name of the file.xlsx" <br>
 DISCORDTOKEN="token for discord bot"<br>
-CLASSARRAY="keywoards of the row you want to find in the xlsx document, split with ";" "<br>
-CHATID="discord channel IDs of the text channels you want to send the message to, split by ";" "<br>
+CLASSARRAY="keywoards of the row you want to find in the xlsx document, split with " " "<br>
+CHATID="discord channel IDs of the text channels you want to send the message to, split by " " "<br>
 
 modules used: <br>
 discord.js : npm i discord.js <br>
