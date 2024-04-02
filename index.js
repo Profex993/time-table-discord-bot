@@ -32,8 +32,61 @@ client.on(Events.ClientReady, client => {
         classMap.set(searchedClasses[i], client.channels.cache.get(channelIDs[i]));
     }
 
-    download();
+    start();
 });
+
+function start() {
+
+    let date = new Date();
+
+    if (date.getHours() == 18 && date.getMinutes() >= 50) {
+
+        run();
+
+    } else {
+
+        var interval1 = setInterval(function () {
+
+            let date2 = new Date();
+
+            if (date2.getHours() == 18 && date2.getMinutes() >= 50) {
+
+                run();
+                clearInterval(interval1);
+
+            }
+
+        }, 600000);
+        //1200000
+    }
+
+}
+
+function run() {
+
+    let date = new Date();
+    let day = date.getDay();
+
+    if (day == 0 || day == 1 || day == 3 || day == 4 || day == 2) {
+        f1();
+        setInterval(function () {
+            f1();
+        }, 86400000);
+
+    } else {
+        setInterval(function () {
+            f1();
+        }, 86400000);
+       
+    }
+    function f1() {
+        let date2 = new Date();
+        let day = date2.getDay();
+        if (day == 0 || day == 1 || day == 3 || day == 4 || day == 2) {
+            download();
+        }
+    }
+}
 
 function download() {
     SPPull.download(sppullContext, sppullOptions).then(function () {
