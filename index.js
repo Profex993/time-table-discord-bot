@@ -1,33 +1,34 @@
 const { Client, Events, GatewayIntentBits } = require("discord.js");
-const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent] });
+const client = new Client({ intents: [GatewayIntentBits.Guilds,
+        GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent] });
+const config = require("./config.json");
 
 const xlsx = require("xlsx");
 const fs = require("fs");
 const { SPPull } = require("sppull");
-require("dotenv").config();
 
-var searchedClasses = process.env.CLASSARRAY.split(" ");
-var classMap = new Map();
+let searchedClasses = config.forClasses.split(" ");
+let classMap = new Map();
 
 const sppullContext = {
-    siteUrl: process.env.URL,
+    siteUrl: config.url,
     creds: {
-        username: process.env.SITEUSERNAME,
-        password: process.env.SITEPASSWORD,
+        username: config.siteUsername,
+        password: config.sitePassword,
         online: true
     }
 };
 
 const sppullOptions = {
-    spRootFolder: process.env.SITEROOTFOLDER,
-    strictObjects: [process.env.SITEORIGINALFILENAME],
+    spRootFolder: config.siteRootFolder,
+    strictObjects: [config.siteFileName],
     dlRootFolder: "./data/"
 };
 
-client.login(process.env.DISCORDTOKEN);
+client.login(config.discordToken);
 
 client.on(Events.ClientReady, client => {
-    let channelIDs = process.env.CHATID.split(" ");
+    let channelIDs = config.chatId.split(" ");
     for (let i = 0; i < searchedClasses.length; i++) {
         classMap.set(searchedClasses[i], client.channels.cache.get(channelIDs[i]));
     }
@@ -39,17 +40,17 @@ function start() {
 
     let date = new Date();
 
-    if (date.getHours() == 18 && date.getMinutes() >= 50) {
+    if (date.getHours() === 18 && date.getMinutes() >= 50) {
 
         run();
 
     } else {
 
-        var interval1 = setInterval(function () {
+        let interval1 = setInterval(function () {
 
             let date2 = new Date();
 
-            if (date2.getHours() == 18 && date2.getMinutes() >= 50) {
+            if (date2.getHours() === 18 && date2.getMinutes() >= 50) {
 
                 run();
                 clearInterval(interval1);
@@ -67,7 +68,7 @@ function run() {
     let date = new Date();
     let day = date.getDay();
 
-    if (day == 0 || day == 1 || day == 3 || day == 4 || day == 2) {
+    if (day === 0 || day === 1 || day === 3 || day === 4 || day === 2) {
         f1();
         setInterval(function () {
             f1();
@@ -82,7 +83,7 @@ function run() {
     function f1() {
         let date2 = new Date();
         let day = date2.getDay();
-        if (day == 0 || day == 1 || day == 3 || day == 4 || day == 2) {
+        if (day === 0 || day === 1 || day === 3 || day === 4 || day === 2) {
             download();
         }
     }
@@ -90,7 +91,7 @@ function run() {
 
 function download() {
     SPPull.download(sppullContext, sppullOptions).then(function () {
-        fs.rename("./data/" + process.env.SITEORIGINALFILENAME, "./data/data.xlsx", () => {
+        fs.rename("./data/" + config.siteFileName, "./data/data.xlsx", () => {
             processXLSX();
         });
     }).catch(function (err) {
@@ -106,7 +107,7 @@ function processXLSX() {
 
     let dateFormat = (date.getDate() + 1) + "" + (date.getMonth() + 1) + "" + date.getFullYear();
     for (let i = wb.SheetNames.length - 1; i > 0; i--) {
-        if (wb.SheetNames[i].replace(/[^0-9]/g, '') == dateFormat) {
+        if (wb.SheetNames[i].replace(/[^0-9]/g, '') === dateFormat) {
             ws = wb.Sheets[wb.SheetNames[i]];
             break;
         }
@@ -117,7 +118,7 @@ function processXLSX() {
 
     for (let i = 0; i < xlsxData.length; i++) {
         for (let j = 0; j < searchedClasses.length; j++) {
-            if (xlsxData[i].class != undefined) {
+            if (xlsxData[i].class !== undefined) {
                 let currentClass = searchedClasses[j];
                 if (JSON.stringify(xlsxData[i].class).toLocaleLowerCase().match(currentClass)) {
                     let out = "";
@@ -127,7 +128,7 @@ function processXLSX() {
                         }
                     }
 
-                    if (out != "") {
+                    if (out !== "") {
                         classMap.get(currentClass).send("Změny rozvrhu pro třídu " + currentClass + " na den: " + (date.getDate() + 1) + "." + (date.getMonth() + 1) + ".\n" + out);
                     }
                 }
